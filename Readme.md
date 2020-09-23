@@ -91,6 +91,7 @@ Add code to ```ConfigureServices``` on Startup.cs file and it will register all 
 
 ## TODO List
 
+* [x] Setup CI for publishing package on nuget
 * [ ] Add unit tests
 * [ ] Register named typed dependency
 * [ ] Inject name typed dependency
