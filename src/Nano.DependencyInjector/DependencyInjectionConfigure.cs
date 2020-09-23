@@ -21,8 +21,8 @@ namespace Nano.DependencyInjector
 
                 dependencies.Add(new DependencyInjectionServiceType()
                 {
-                    Type = injectionType.Value,
-                    Implementation = type,
+                    LifeTime = injectionType.Value,
+                    ImplementationType = type,
                     InterfaceType =
                         type.GetInterfaces()[
                             0] // TODO (peacecwz): Detect multiple interface and interface inject selection
@@ -34,17 +34,17 @@ namespace Nano.DependencyInjector
 
         private static ServiceLifetime? GetInjectionType(Type type)
         {
-            if (type.GetCustomAttributes(typeof(SingletonAttribute), true).Length > 0)
+            if (type.GetCustomAttribute<SingletonAttribute>() != null)
             {
                 return ServiceLifetime.Singleton;
             }
 
-            if (type.GetCustomAttributes(typeof(ScopedAttribute), true).Length > 0)
+            if (type.GetCustomAttribute<ScopedAttribute>() != null)
             {
                 return ServiceLifetime.Scoped;
             }
 
-            if (type.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
+            if (type.GetCustomAttribute<TransientAttribute>() != null)
             {
                 return ServiceLifetime.Transient;
             }
