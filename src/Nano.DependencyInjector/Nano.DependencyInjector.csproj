@@ -15,7 +15,6 @@
         <PackageTags>dependency-injector, dependency-injection, nano-dependency-injector</PackageTags>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IsPackable>true</IsPackable>
-        <PackAsTool>true</PackAsTool>
     </PropertyGroup>
 
     <ItemGroup>
