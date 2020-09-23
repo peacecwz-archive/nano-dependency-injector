@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D49F7FAA-60A5-4924-B35E-7197530987BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D4271E6C-780C-4B0D-9CEE-C192A0088DCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nano.DependencyInjector", "src\Nano.DependencyInjector\Nano.DependencyInjector.csproj", "{22D7E784-0B8E-447C-8B79-73C30759A858}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nano.APIExample", "tests\Nano.APIExample\Nano.APIExample.csproj", "{DB8AF37A-681B-48CF-8118-7D2E1518A439}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nano.DependencyInjector.Tests", "tests\Nano.DependencyInjector.Tests\Nano.DependencyInjector.Tests.csproj", "{13C46E05-D404-4609-A82A-9CDDF653A9A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{22D7E784-0B8E-447C-8B79-73C30759A858} = {D49F7FAA-60A5-4924-B35E-7197530987BB}
+		{DB8AF37A-681B-48CF-8118-7D2E1518A439} = {D4271E6C-780C-4B0D-9CEE-C192A0088DCA}
+		{13C46E05-D404-4609-A82A-9CDDF653A9A1} = {D4271E6C-780C-4B0D-9CEE-C192A0088DCA}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22D7E784-0B8E-447C-8B79-73C30759A858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D7E784-0B8E-447C-8B79-73C30759A858}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D7E784-0B8E-447C-8B79-73C30759A858}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22D7E784-0B8E-447C-8B79-73C30759A858}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB8AF37A-681B-48CF-8118-7D2E1518A439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB8AF37A-681B-48CF-8118-7D2E1518A439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB8AF37A-681B-48CF-8118-7D2E1518A439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB8AF37A-681B-48CF-8118-7D2E1518A439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13C46E05-D404-4609-A82A-9CDDF653A9A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13C46E05-D404-4609-A82A-9CDDF653A9A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13C46E05-D404-4609-A82A-9CDDF653A9A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13C46E05-D404-4609-A82A-9CDDF653A9A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
