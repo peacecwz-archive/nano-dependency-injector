@@ -12,7 +12,7 @@ namespace Nano.DependencyInjector
             foreach (var dependency in dependencies)
             {
                 services.Add(
-                    new ServiceDescriptor(dependency.InterfaceType, dependency.Implementation, dependency.Type));
+                    new ServiceDescriptor(dependency.InterfaceType, dependency.ImplementationType, dependency.LifeTime));
             }
 
             return services;

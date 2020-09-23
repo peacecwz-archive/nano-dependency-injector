@@ -96,6 +96,7 @@ Add code to ```ConfigureServices``` on Startup.cs file and it will register all 
 * [ ] Inject name typed dependency
 * [ ] Add property injection without constructor
 * [ ] Register injectable multiple interfaces
+* [ ] Generic interfaces
 
 ## Contribution
 
