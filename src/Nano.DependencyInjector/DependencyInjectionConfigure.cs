@@ -10,46 +10,56 @@ namespace Nano.DependencyInjector
         public static List<DependencyInjectionServiceType> GetDependencies(Assembly assembly)
         {
             var dependencies = new List<DependencyInjectionServiceType>();
-            foreach (Type type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 var injectionType = GetInjectionType(type);
-
-                if (!injectionType.HasValue)
-                {
+                if (!injectionType.Lifetime.HasValue)
                     continue;
-                }
 
-                dependencies.Add(new DependencyInjectionServiceType()
+                dependencies.Add(new DependencyInjectionServiceType
                 {
-                    LifeTime = injectionType.Value,
+                    LifeTime = injectionType.Lifetime.Value,
                     ImplementationType = type,
-                    InterfaceType =
-                        type.GetInterfaces()[
-                            0] // TODO (peacecwz): Detect multiple interface and interface inject selection
+                    InterfaceType = injectionType.Self ? type : type.GetInterfaces()[0] // TODO (peacecwz): Detect multiple interface and interface inject selection
                 });
             }
 
             return dependencies;
         }
 
-        private static ServiceLifetime? GetInjectionType(Type type)
+        private static (ServiceLifetime? Lifetime, bool Self) GetInjectionType(Type type)
         {
             if (type.GetCustomAttribute<SingletonAttribute>() != null)
             {
-                return ServiceLifetime.Singleton;
+                return (ServiceLifetime.Singleton, false);
+            }
+
+            if (type.GetCustomAttribute<SelfSingletonAttribute>() != null)
+            {
+                return (ServiceLifetime.Singleton, true);
             }
 
             if (type.GetCustomAttribute<ScopedAttribute>() != null)
             {
-                return ServiceLifetime.Scoped;
+                return (ServiceLifetime.Scoped, false);
+            }
+
+            if (type.GetCustomAttribute<SelfScopedAttribute>() != null)
+            {
+                return (ServiceLifetime.Scoped, true);
             }
 
             if (type.GetCustomAttribute<TransientAttribute>() != null)
             {
-                return ServiceLifetime.Transient;
+                return (ServiceLifetime.Transient, false);
             }
 
-            return null;
+            if (type.GetCustomAttribute<SelfTransientAttribute>() != null)
+            {
+                return (ServiceLifetime.Transient, true);
+            }
+
+            return (null, false);
         }
     }
 }
