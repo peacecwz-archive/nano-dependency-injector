@@ -8,24 +8,12 @@ namespace Nano.DependencyInjector
     public static class NanoDependencyInjectorExtensions
     {
         public static IServiceCollection RegisterDependencies(this IServiceCollection services, Assembly assembly)
-            {
-            var dependencies = DependencyInjectionConfigure.GetDependencies(assembly);
-
-            foreach (var dependency in dependencies)
-            {
-
-                if (dependency.HasPropertyInjectAttribute())
-                {
-                    services.AddPropertyInjectableTypes(dependency);
-                }
-                else
-                {
-                    services.Add(
-                        new ServiceDescriptor(dependency.InterfaceType, dependency.ImplementationType, dependency.LifeTime));
-                }
-
-            }
-
+        {
+            DependencyInjectionConfigure.GetDependencies(assembly)
+                .If(d => d.HasPropertyInjectAttribute())
+                .True(services.AddPropertyInjectableTypes)
+                .False(f => services.Add(
+                    new ServiceDescriptor(f.InterfaceType, f.ImplementationType, f.LifeTime)));
             return services;
         }
 
@@ -39,15 +27,14 @@ namespace Nano.DependencyInjector
                 var value = provider.GetService(property.PropertyType);
                 property.SetValue(instance, value);
             }
-
         }
+
         private static object CreateInstance(IServiceProvider provider, Type type)
         {
             object instance;
             ConstructorInfo publicConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public,
-                null, new[] { typeof(string) }, null);
-
-
+                null, new[] {typeof(string)}, null);
+            
             if (publicConstructor == null)
             {
                 instance = System.Runtime.Serialization.FormatterServices
@@ -60,29 +47,35 @@ namespace Nano.DependencyInjector
 
             if (constructorPareParameters.Any())
             {
-                var parameterInstances = constructorPareParameters.Select(parameter => provider.GetRequiredService(parameter.ParameterType)).ToList();
+                var parameterInstances = constructorPareParameters
+                    .Select(parameter => provider.GetRequiredService(parameter.ParameterType)).ToList();
                 instance = Activator.CreateInstance(type, parameterInstances);
             }
             else
             {
                 instance = Activator.CreateInstance(type);
             }
+
             SetPropertyValue(provider, instance);
             return instance;
         }
 
-        internal static void AddPropertyInjectableTypes(this IServiceCollection services, DependencyInjectionServiceType dependency)
+        internal static void AddPropertyInjectableTypes(this IServiceCollection services,
+            DependencyInjectionServiceType dependency)
         {
             switch (dependency.LifeTime)
             {
                 case ServiceLifetime.Scoped:
-                    services.AddScoped(dependency.InterfaceType, provider => CreateInstance(provider, dependency.ImplementationType));
+                    services.AddScoped(dependency.InterfaceType,
+                        provider => CreateInstance(provider, dependency.ImplementationType));
                     break;
                 case ServiceLifetime.Singleton:
-                    services.AddSingleton(dependency.InterfaceType, provider => CreateInstance(provider, dependency.ImplementationType));
+                    services.AddSingleton(dependency.InterfaceType,
+                        provider => CreateInstance(provider, dependency.ImplementationType));
                     break;
                 case ServiceLifetime.Transient:
-                    services.AddTransient(dependency.InterfaceType, provider => CreateInstance(provider, dependency.ImplementationType));
+                    services.AddTransient(dependency.InterfaceType,
+                        provider => CreateInstance(provider, dependency.ImplementationType));
                     break;
                 default:
                     throw new NotImplementedException();
