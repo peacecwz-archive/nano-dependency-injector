@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Nano.DependencyInjector
 {
@@ -8,60 +7,80 @@ namespace Nano.DependencyInjector
     {
         public static ITrue<T> If<T>(this IEnumerable<T> list, Predicate<T> ifStatement)
         {
-            var trueResult = list.Where(i => ifStatement(i));
-            var falseResult = list.Where(i => !ifStatement(i));
-
-            return new IfResult<T>(trueResult, falseResult);
+            return new IfTrueWrapper<T>(list, ifStatement);
         }
     }
 
-    public class IfResult<T> : ITrue<T>
+    public class IfTrueWrapper<T> : ITrue<T>
     {
-        private readonly IEnumerable<T> trueResult;
-        private readonly IEnumerable<T> falseResult;
+        public IEnumerable<T> List { get; }
+        public Predicate<T> IfStatement { get; }
+        public Action<T> TrueAction { get; private set; }
 
-        public IfResult(IEnumerable<T> trueResult, IEnumerable<T> falseResult)
+        public IfTrueWrapper(IEnumerable<T> list, Predicate<T> ifStatement)
         {
-            this.trueResult = trueResult;
-            this.falseResult = falseResult;
+            List = list;
+            IfStatement = ifStatement;
         }
 
-        public IFalse<T> True(Action<T> act)
+        public IFalse<T> True(Action<T> trueAction)
         {
-            foreach (var item in trueResult)
-            {
-                act(item);
-            }
+            TrueAction = trueAction;
 
-            return new ElseResult<T>(falseResult);
+            return new ElseResult<T>(this);
         }
     }
 
     public class ElseResult<T> : IFalse<T>
     {
-        private readonly IEnumerable<T> falseResult;
+        private readonly IfTrueWrapper<T> _ifTrueWrapper;
 
-        public ElseResult(IEnumerable<T> falseResult)
+        public ElseResult(IfTrueWrapper<T> ifTrueWrapper)
         {
-            this.falseResult = falseResult;
+            _ifTrueWrapper = ifTrueWrapper;
         }
 
-        void IFalse<T>.False(Action<T> act)
+        void IFalse<T>.False(Action<T> falseAction)
         {
-            foreach (var item in falseResult)
+            InternalRun(_ifTrueWrapper.List, _ifTrueWrapper.IfStatement, _ifTrueWrapper.TrueAction, falseAction);
+        }
+
+        public void Run()
+        {
+            InternalRun(_ifTrueWrapper.List, _ifTrueWrapper.IfStatement, _ifTrueWrapper.TrueAction, null);
+        }
+
+        private void InternalRun(IEnumerable<T> list,
+            Predicate<T> ifStatement,
+            Action<T> trueAction,
+            Action<T> falseAction)
+        {
+            foreach (var item in list)
             {
-                act(item);
+                if (ifStatement(item))
+                {
+                    trueAction(item);
+                }
+                else
+                {
+                    falseAction?.Invoke(item);
+                }
             }
         }
     }
 
-    public interface ITrue<T>
+    public interface IRunnable
     {
-        IFalse<T> True(Action<T> act);
+        void Run();
     }
 
-    public interface IFalse<T>
+    public interface ITrue<T>
     {
-        void False(Action<T> act);
+        IFalse<T> True(Action<T> trueAction);
+    }
+
+    public interface IFalse<T> : IRunnable
+    {
+        void False(Action<T> falseAction);
     }
 }
