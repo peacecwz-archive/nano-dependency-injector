@@ -34,7 +34,7 @@ namespace Nano.DependencyInjector
             object instance;
             ConstructorInfo publicConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public,
                 null, new[] {typeof(string)}, null);
-            
+
             if (publicConstructor == null)
             {
                 instance = System.Runtime.Serialization.FormatterServices
